@@ -4,30 +4,30 @@ const countdown = document.getElementById("countdown");
 
 let launches = [];
 
-// API 1: SpaceX Launches
 async function loadLaunches() {
-  const response = await fetch("https://api.spacexdata.com/v5/launches/upcoming");
-  launches = await response.json();
+  const response = await fetch("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=10");
+  const data = await response.json();
+
+  launches = data.results;
   displayLaunches(launches);
 
   if (launches.length > 0) {
-    startCountdown(launches[0].date_utc);
+    startCountdown(launches[0].window_start);
   }
 }
 
 function displayLaunches(data) {
   launchesContainer.innerHTML = "";
 
-  data.slice(0, 10).forEach((launch) => {
+  data.forEach((launch) => {
     const card = document.createElement("div");
     card.classList.add("card");
 
     card.innerHTML = `
       <h3>${launch.name}</h3>
-      <p>Date: ${new Date(launch.date_utc).toLocaleString()}</p>
-      <button onclick="saveFavorite('${launch.name}')">
-        Save Favorite
-      </button>
+      <p><strong>Provider:</strong> ${launch.launch_service_provider.name}</p>
+      <p><strong>Date:</strong> ${new Date(launch.window_start).toLocaleString()}</p>
+      <button onclick="saveFavorite('${launch.name}')">Save Favorite</button>
     `;
 
     launchesContainer.appendChild(card);
@@ -42,45 +42,37 @@ searchInput.addEventListener("input", () => {
   displayLaunches(filtered);
 });
 
-// Local Storage
 function saveFavorite(name) {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
   favorites.push(name);
-
   localStorage.setItem("favorites", JSON.stringify(favorites));
-
   alert("Saved to favorites!");
 }
 
-// Countdown Timer
 function startCountdown(date) {
   setInterval(() => {
     const difference = new Date(date) - new Date();
-
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
 
-    countdown.textContent =
-      "Next Launch Countdown: " + days + " days";
+    countdown.textContent = "Next Launch Countdown: " + days + " days";
   }, 1000);
 }
 
-// API 2: NASA APOD
-async function loadNASA() {
-  const response = await fetch(
-    "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
-  );
-
+async function loadNASAImage() {
+  const response = await fetch("https://images-api.nasa.gov/search?q=space&media_type=image");
   const data = await response.json();
+
+  const item = data.collection.items[0];
+  const imageUrl = item.links[0].href;
+  const title = item.data[0].title;
 
   document.getElementById("nasa").innerHTML = `
     <div class="card">
-      <h2>${data.title}</h2>
-      <img src="${data.url}" width="100%">
-      <p>${data.explanation.substring(0, 200)}...</p>
+      <h3>${title}</h3>
+      <img src="${imageUrl}" alt="${title}" width="100%">
     </div>
   `;
 }
 
 loadLaunches();
-loadNASA();
+loadNASAImage();
