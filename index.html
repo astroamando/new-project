@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Mission and Launch Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Mission and Launch Tracker</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
     <h1>Space Mission and Launch Tracker</h1>
+    <p>Explore upcoming SpaceX launches and NASA space images.</p>
+  </header>
 
-    <p>Welcome to my final project for WDD 330.</p>
+  <main class="container">
+    <section class="search-box">
+      <h2>Search Upcoming Launches</h2>
+      <input type="text" id="search" placeholder="Search by launch name">
+    </section>
 
-    <h2>Project Features</h2>
-    <ul>
-        <li>Upcoming Launches</li>
-        <li>Launch Details</li>
-        <li>Launch Search</li>
-        <li>Provider Filtering</li>
-        <li>Countdown Timer</li>
-    </ul>
+    <section id="countdown"></section>
+
+    <section>
+      <h2>Upcoming SpaceX Launches</h2>
+      <div id="launches"></div>
+    </section>
+
+    <section>
+      <h2>NASA Astronomy Picture of the Day</h2>
+      <div id="nasa"></div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
 </body>
 </html>
